@@ -1,13 +1,13 @@
 export const firebaseConfig = {
-  apiKey: "REPLACE_ME",
-  authDomain: "REPLACE_ME.firebaseapp.com",
-  projectId: "REPLACE_ME",
-  storageBucket: "REPLACE_ME.firebasestorage.app",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
+  apiKey: "AIzaSyXXXXXXXXXXXX",
+  authDomain: "irs-student-development.firebaseapp.com",
+  projectId: "irs-student-development",
+  storageBucket: "irs-student-development.firebasestorage.app",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
 };
 
 // UI-level allowlist. Firestore Security Rules are the real security boundary.
 export const allowedEmails = [
-  "YOUR_EMAIL@istek.k12.tr"
+  "enes.cetintas@istek.k12.tr"
 ];
