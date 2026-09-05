@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#5a1021" />
+  <title>IRS Student Development</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <div id="loginGate" class="login-gate hidden">
+    <div class="login-card">
+      <div class="brand-mark">IRS</div>
+      <h1>Student Development</h1>
+      <p>Öğrenci gelişim kayıtlarına erişmek için yetkili Google hesabınla giriş yap.</p>
+      <button id="loginBtn" class="btn primary full">Google ile giriş yap</button>
+      <p class="muted small">Firebase henüz yapılandırılmadıysa uygulama otomatik olarak yerel demo modunda açılır.</p>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">IRS</div>
+        <div><strong>Student Development</strong><span>2026–2027</span></div>
+      </div>
+      <nav>
+        <button class="nav-item active" data-page="dashboard"><span>◫</span> Özet</button>
+        <button class="nav-item" data-page="students"><span>＋</span> Öğrenciler</button>
+        <button class="nav-item" data-page="evaluate"><span>✓</span> Değerlendir</button>
+        <button class="nav-item" data-page="history"><span>↺</span> Kayıtlar</button>
+        <button class="nav-item" data-page="settings"><span>⚙</span> Ayarlar & Yedek</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div id="storageBadge" class="storage-badge">Yerel Demo</div>
+        <button id="logoutBtn" class="btn ghost tiny hidden">Çıkış</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">Özet</h1>
+          <p id="pageSubtitle">Takımın ve öğrencilerin güncel gelişim görünümü.</p>
+        </div>
+        <div class="top-actions"><span id="userLabel" class="user-label"></span><button id="quickAddBtn" class="btn primary">+ Öğrenci Ekle</button></div>
+      </header>
+
+      <section id="dashboard" class="page active">
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="content-grid two">
+          <article class="panel">
+            <div class="panel-head"><div><h2>Öğrenci Gelişim Özeti</h2><p>Bir sonraki seviyeye yaklaşım ve son aktivite.</p></div><select id="departmentFilter"><option value="all">Tüm Departmanlar</option></select></div>
+            <div id="studentSummary" class="student-summary"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><h2>Dikkat Gerektirenler</h2><p>Son haftalarda aktivitesi azalan veya değerlendirme bekleyen öğrenciler.</p></div></div>
+            <div id="attentionList" class="attention-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="students" class="page">
+        <div class="content-grid two students-layout">
+          <article class="panel form-panel">
+            <div class="panel-head"><div><h2 id="studentFormTitle">Yeni Öğrenci</h2><p>Temel öğrenci bilgilerini kaydet.</p></div></div>
+            <form id="studentForm">
+              <input type="hidden" id="studentId" />
+              <label>Ad Soyad<input id="studentName" required maxlength="80" /></label>
+              <div class="form-row">
+                <label>Sınıf<select id="studentGrade" required><option value="">Seç</option><option>9</option><option>10</option><option>11</option></select></label>
+                <label>Departman<select id="studentDepartment" required></select></label>
+              </div>
+              <div class="form-row">
+                <label>Seviye<select id="studentLevel"><option>Explorer</option><option>Contributor</option><option>Owner</option><option>Lead</option></select></label>
+                <label>Başlangıç Tarihi<input id="studentStartDate" type="date" required /></label>
+              </div>
+              <label class="switch-line"><input id="studentActive" type="checkbox" checked /><span>Aktif öğrenci</span></label>
+              <label>Mentor Notu<textarea id="studentNote" rows="4" maxlength="1000" placeholder="Genel gözlem veya hatırlatma..."></textarea></label>
+              <div class="form-actions"><button class="btn primary" type="submit">Kaydet</button><button class="btn ghost" id="studentFormReset" type="button">Temizle</button></div>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><h2>Kayıtlı Öğrenciler</h2><p>Öğrenci seçerek düzenleyebilir veya değerlendirmeye geçebilirsin.</p></div><input id="studentSearch" class="search" placeholder="İsim ara..." /></div>
+            <div id="studentTable" class="table-wrap"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="evaluate" class="page">
+        <div class="content-grid two evaluate-layout">
+          <article class="panel form-panel">
+            <div class="panel-head"><div><h2>Haftalık Değerlendirme</h2><p>Hızlı tikler + kısa gelişim skalası.</p></div></div>
+            <form id="evaluationForm">
+              <label>Öğrenci<select id="evalStudent" required></select></label>
+              <label>Tarih<input id="evalDate" type="date" required /></label>
+              <h3>Hızlı Göstergeler</h3>
+              <div id="checkGrid" class="check-grid"></div>
+              <h3>Gelişim Puanları <span class="hint">0: gözlenmedi · 3: güçlü</span></h3>
+              <div id="ratingGrid" class="rating-grid"></div>
+              <div class="score-preview"><span>Bu değerlendirme</span><strong id="scorePreview">0 / 26</strong></div>
+              <label>Mentor Notu<textarea id="evalNote" rows="4" maxlength="1500" placeholder="Bu hafta gözlemlediğin önemli gelişme, risk veya bağlam..."></textarea></label>
+              <label>Sonraki Adım<textarea id="evalNext" rows="3" maxlength="800" placeholder="Bir sonraki haftada beklenen tek net adım..."></textarea></label>
+              <div class="form-actions"><button class="btn primary" type="submit">Değerlendirmeyi Kaydet</button><button class="btn ghost" id="evalReset" type="button">Temizle</button></div>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><h2>Seçili Öğrenci</h2><p>Son değerlendirmeler ve seviye ilerlemesi.</p></div></div>
+            <div id="selectedStudentProfile" class="profile-placeholder">Listeden bir öğrenci seç.</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="history" class="page">
+        <article class="panel">
+          <div class="panel-head"><div><h2>Değerlendirme Kayıtları</h2><p>Geçmiş değerlendirmeleri incele veya sil.</p></div><div class="inline-filters"><select id="historyStudentFilter"><option value="all">Tüm Öğrenciler</option></select><select id="historyLevelFilter"><option value="all">Tüm Seviyeler</option><option>Explorer</option><option>Contributor</option><option>Owner</option><option>Lead</option></select></div></div>
+          <div id="historyTable" class="table-wrap"></div>
+        </article>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="content-grid two">
+          <article class="panel">
+            <div class="panel-head"><div><h2>Puanlama Sistemi</h2><p>Skor karar vermez; gelişim görüşmesine veri sağlar.</p></div></div>
+            <div id="scoringInfo" class="settings-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><h2>Yedek & Veri</h2><p>Verileri dışa aktar veya yerel demo verisini geri yükle.</p></div></div>
+            <div class="backup-actions">
+              <button id="exportJsonBtn" class="btn primary">JSON Yedeği İndir</button>
+              <button id="exportCsvBtn" class="btn secondary">CSV Değerlendirme İndir</button>
+              <label class="btn ghost file-btn">JSON Yedeği Yükle<input id="importJsonInput" type="file" accept="application/json" hidden></label>
+            </div>
+            <div class="warning-box"><strong>Kalıcı kullanım:</strong> <code>firebase-config.js</code> dosyasındaki ayarları doldur, Firebase Authentication'da Google girişini aç ve Firestore Security Rules dosyasını uygula.</div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
