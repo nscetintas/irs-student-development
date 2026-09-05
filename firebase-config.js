@@ -10,5 +10,5 @@ export const firebaseConfig = {
 
 // UI-level allowlist. Firestore Security Rules are the real security boundary.
 export const allowedEmails = [
-  "enes.cetintas@istek.k12.tr"
+  "enescetintas95@gmail.com"
 ];
