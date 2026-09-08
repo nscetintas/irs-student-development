@@ -28,7 +28,7 @@ async function initFirebase(){
   return new Promise(resolve=>authMod.onAuthStateChanged(state.auth,async user=>{
     if(!user){$('#loginGate').classList.remove('hidden');resolve(false);return}
     if(allowedEmails?.length && !allowedEmails.includes(user.email)){await authMod.signOut(state.auth);alert('Bu Google hesabı yetkili listesinde değil.');resolve(false);return}
-    state.user=user;$('#loginGate').classList.add('hidden');$('#logoutBtn').classList.remove('hidden');$('#userLabel').textContent=user.email;await refreshCloud();resolve(true)
+    state.user=user;$('#loginGate').classList.add('hidden');$('#logoutBtn').classList.remove('hidden');$('#userLabel').textContent=user.email;await refreshCloud();renderAll();resetStudentForm();resetEval();toast('Cloud verileri senkronize edildi');resolve(true)
   }))
 }
 async function refreshCloud(){
